@@ -67,7 +67,7 @@ class AdvancedPaginatedDataTable extends StatefulWidget {
   /// To modify the border or background color of the [PaginatedDataTable], use
   /// [CardTheme], since a [Card] wraps the inner [DataTable].
   AdvancedPaginatedDataTable({
-    Key? key,
+    super.key,
     this.header,
     this.actions,
     required this.columns,
@@ -87,7 +87,7 @@ class AdvancedPaginatedDataTable extends StatefulWidget {
       defaultRowsPerPage,
       defaultRowsPerPage * 2,
       defaultRowsPerPage * 5,
-      defaultRowsPerPage * 10
+      defaultRowsPerPage * 10,
     ],
     this.onRowsPerPageChanged,
     this.dragStartBehavior = DragStartBehavior.start,
@@ -114,8 +114,7 @@ class AdvancedPaginatedDataTable extends StatefulWidget {
             }
             return true;
           }(),
-        ),
-        super(key: key);
+        );
 
   /// Add empty/blank lines to the table if not enough records are present
   /// If the source doesnt have enough data add empty/blank lines to fill a page
@@ -342,16 +341,16 @@ class PaginatedDataTableState extends State<AdvancedPaginatedDataTable> {
       widget.source.forceRemoteReload = false;
       return true;
     }
-    final _rowsPerPage = rowsPerPage ?? widget.rowsPerPage;
+    final rowsPerPage0 = rowsPerPage ?? widget.rowsPerPage;
     final firstRowIndexSafe = firstRowIndex ?? _firstRowIndex;
 
     if (lastOrderColumn != widget.sortColumnIndex ||
         lastOrderDirection != widget.sortAscending ||
-        lastRecordsByPage != _rowsPerPage ||
+        lastRecordsByPage != rowsPerPage0 ||
         lastOffset != firstRowIndexSafe) {
       lastOrderColumn = widget.sortColumnIndex;
       lastOrderDirection = widget.sortAscending;
-      lastRecordsByPage = _rowsPerPage;
+      lastRecordsByPage = rowsPerPage0;
       lastOffset = firstRowIndexSafe;
 
       return true;
@@ -361,20 +360,20 @@ class PaginatedDataTableState extends State<AdvancedPaginatedDataTable> {
 
   void setLoadNextPage({int? rowsPerPage, int? firstRowIndex}) {
     _rows.clear();
-    late final int _finalFirstRowIndex;
+    late final int finalFirstRowIndex;
     rowsPerPage ??= widget.rowsPerPage;
     if (widget.source.nextStartIndex != null) {
-      _finalFirstRowIndex = widget.source.nextStartIndex!;
-      _firstRowIndex = _finalFirstRowIndex;
+      finalFirstRowIndex = widget.source.nextStartIndex!;
+      _firstRowIndex = finalFirstRowIndex;
       widget.source.nextStartIndex = null;
     } else {
-      _finalFirstRowIndex = _firstRowIndex;
+      finalFirstRowIndex = _firstRowIndex;
     }
 
     if (remoteReloadRequired(rowsPerPage, firstRowIndex)) {
       loadNextPage = widget.source.loadNextPage(
         rowsPerPage,
-        _finalFirstRowIndex,
+        finalFirstRowIndex,
         widget.sortColumnIndex,
         sortAscending: widget.sortAscending,
       );
@@ -568,41 +567,41 @@ class PaginatedDataTableState extends State<AdvancedPaginatedDataTable> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  if (headerWidgets.isNotEmpty)
-                    Semantics(
-                      container: true,
-                      child: DefaultTextStyle(
-                        // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
-                        // list and then tweak them appropriately.
-                        // See https://material.io/design/components/data-tables.html#tables-within-cards
-                        style: _selectedRowCount > 0
-                            ? themeData.textTheme.subtitle1!.copyWith(
-                                color: themeData.colorScheme.secondary)
-                            : themeData.textTheme.headline6!
-                                .copyWith(fontWeight: FontWeight.w400),
-                        child: IconTheme.merge(
-                          data: const IconThemeData(
-                            opacity: 0.54,
-                          ),
-                          child: Ink(
-                            height: 64.0,
-                            color: _selectedRowCount > 0
-                                ? themeData.secondaryHeaderColor
-                                : null,
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: startPadding,
-                                end: 14.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: headerWidgets,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  // if (headerWidgets.isNotEmpty)
+                  //   Semantics(
+                  //     container: true,
+                  //     child: DefaultTextStyle(
+                  //       // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
+                  //       // list and then tweak them appropriately.
+                  //       // See https://material.io/design/components/data-tables.html#tables-within-cards
+                  //       style: _selectedRowCount > 0
+                  //           ? themeData.textTheme.subtitle1!.copyWith(
+                  //               color: themeData.colorScheme.secondary)
+                  //           : themeData.textTheme.headline6!
+                  //               .copyWith(fontWeight: FontWeight.w400),
+                  //       child: IconTheme.merge(
+                  //         data: const IconThemeData(
+                  //           opacity: 0.54,
+                  //         ),
+                  //         child: Ink(
+                  //           height: 64.0,
+                  //           color: _selectedRowCount > 0
+                  //               ? themeData.secondaryHeaderColor
+                  //               : null,
+                  //           child: Padding(
+                  //             padding: EdgeInsetsDirectional.only(
+                  //               start: startPadding,
+                  //               end: 14.0,
+                  //             ),
+                  //             child: Row(
+                  //               mainAxisAlignment: MainAxisAlignment.end,
+                  //               children: headerWidgets,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
                   SingleChildScrollView(
                     controller: scroller,
                     scrollDirection: Axis.horizontal,
